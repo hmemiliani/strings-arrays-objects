@@ -2,7 +2,7 @@
 users = {};
 function userNameAndEmailGenerator(){
     
-    let fullName = prompt("Ingrese y apellido").toLowerCase();
+    let fullName = prompt("Ingrese Nombre y apellido").toLowerCase();
 
     let [firstName, lastName] = fullName.split(" ");
 

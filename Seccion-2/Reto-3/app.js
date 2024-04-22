@@ -44,6 +44,53 @@ function mostrarProductos() {
     productos.forEach(producto => console.log(producto));
 }
 
+//funcion de busqueda
+function buscarEventoPorId() {//buscar
+    let nombre = parseInt(prompt("Ingrese el ID del producto a buscar:"));
+    let productosEncontrados = productos.find(productos => productos.id === id);
+
+    if (productosEncontrados.length > 0) {
+        console.log("Productos encontrados:");
+        productosEncontrados.forEach(productos => {
+            console.log(`ID: ${productos.id}, Nombre: ${productos.nombre}, Precio: ${productos.precio}, Cantidad: ${productos.cantidad}, Descripcion: ${productos.descripcion}`);
+        });
+    } else {
+        alert("No se encontraron productos con ese ID.");
+    }
+}
+
+
+//funcion de actualizacion
+function actualizarproductos() {//actualizar
+    let id = parseInt(prompt("Ingrese el ID del producto a actualizar:"));
+    let productos = productos.find(productos => productos.id === id);
+
+    if (productos) {
+        let nombre = prompt("Ingrese el nombre del producto:");
+        let precio = parseFloat(prompt("Ingrese el precio del producto:"));
+        let cantidad = parseInt(prompt("Ingrese la cantidad del producto:"));
+        let descripcion = prompt("Ingrese la descripción del producto:");
+
+        productos.nombre = nombre;
+        productos.precio = precio;
+        productos.cantidad = cantidad;
+        productos.descripcion = descripcion;
+
+        alert("Evento actualizado correctamente.");
+    } else {
+        alert("No se encontro ningun evento con ese ID.");
+    }
+}
+
+//funcion de eliminar
+//funcion inventario y verificacion de existencia
+//venta de productos
+//compra de productos
+//valor total del inventario
+//organizacion de productos
+//verificacion malas palabras
+//reporte general de los productos
+
 
 while (true) {
     let opcion = prompt("¿Qué desea hacer?\n1. Agregar producto\n2. Duplicar producto\n3. Mostrar productos\n4. Salir");
