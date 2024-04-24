@@ -45,19 +45,18 @@ function mostrarProductos() {
 }
 
 //funcion de busqueda
-function buscarEventoPorId() {//buscar
-    let nombre = parseInt(prompt("Ingrese el ID del producto a buscar:"));
-    let productosEncontrados = productos.find(productos => productos.id === id);
-
-    if (productosEncontrados.length > 0) {
-        console.log("Productos encontrados:");
-        productosEncontrados.forEach(productos => {
-            console.log(`ID: ${productos.id}, Nombre: ${productos.nombre}, Precio: ${productos.precio}, Cantidad: ${productos.cantidad}, Descripcion: ${productos.descripcion}`);
-        });
-    } else {
-        alert("No se encontraron productos con ese ID.");
-    }
+function mostrarProductos() {
+    return productos;
 }
+
+function buscarPorNombre(nombre) {
+    return productos.filter(product => product.name.includes(nombre));
+}
+
+function buscarPorPrecio(min, max) {
+    return productos.filter(product => product.price >= min && product.price <= max);
+}
+
 
 
 //funcion de actualizacion
@@ -83,13 +82,84 @@ function actualizarproductos() {//actualizar
 }
 
 //funcion de eliminar
+function eliminarProducto(id) {
+    productos = productos.filter(product => product.id !== id);
+}
+
 //funcion inventario y verificacion de existencia
+function verificarProducto(id, cantidad) {
+    const productExists = productos.some(product => product.id === id);
+    const enoughQuantity = productos.filter(product => product.id === id && product.quantity >= cantidad).length > 0;
+    return productExists && enoughQuantity;
+}
+
 //venta de productos
 //compra de productos
+function venderProducto(id, cantidad) {
+    const product = productos.find(product => product.id === id);
+    if (product) {
+        product.quantity -= cantidad;
+    }
+}
+
+function comprarProducto(id, cantidad) {
+    const product = productos.find(product => product.id === id);
+    if (product) {
+        product.quantity += cantidad;
+    }
+}
+
 //valor total del inventario
+function calcularValorTotal() {
+    return productos.reduce((total, product) => total + (product.price * product.quantity), 0);
+}
+
 //organizacion de productos
+function ordenarPorPrecio(ascendente = true) {
+    return productos.sort((a, b) => ascendente ? a.price - b.price : b.price - a.price);
+}
+
+function ordenarPorCantidad(ascendente = true) {
+    return productos.sort((a, b) => ascendente ? a.quantity - b.quantity : b.quantity - a.quantity);
+}
+
 //verificacion malas palabras
+//verificar, esta vaina no me da ni haciendo brujeria
+const badWords = ['palabra-niidea-1', 'palabra-niidea-2', 'palabra-niidea-3', 'palabra-niidea-4', 'palabra-niidea-5'];
+
+function identificarMalasPalabras() {
+    const blacklistedProducts = [];
+    productos.forEach(product => {
+        const productCopy = Object.assign({}, product);
+        badWords.forEach(word => {
+            productCopy.description = productCopy.description.replace(new RegExp(word, 'gi'), '***');
+        });
+        blacklistedProducts.push(productCopy);
+    });
+    return blacklistedProducts;
+}
+
 //reporte general de los productos
+function generarReporte() {
+    const totalProducts = productos.length;
+    const totalInventoryValue = calcularValorTotal();
+    const mostExpensiveProducts = ordenarPorPrecio(false).slice(0, 5);
+    const cheapestProducts = ordenarPorPrecio(true).slice(0, 5);
+    const mostAvailableProducts = ordenarPorCantidad(false).slice(0, 5);
+    const leastAvailableProducts = ordenarPorCantidad(true).slice(0, 5);
+    const productsWithBadWords = identificarMalasPalabras();
+    
+    return {
+        totalProducts,
+        totalInventoryValue,
+        mostExpensiveProducts,
+        cheapestProducts,
+        mostAvailableProducts,
+        leastAvailableProducts,
+        productsWithBadWords
+    };
+}
+
 
 
 while (true) {
@@ -111,6 +181,47 @@ while (true) {
             break;
 
         case "3":
+            mostrarProductos();
+            break;
+
+            
+        case "4":
+            mostrarProductos();
+            break;
+
+        case "5":
+            mostrarProductos();
+            break;
+
+        case "5":
+            mostrarProductos();
+            break;
+
+        case "6":
+            mostrarProductos();
+            break;
+
+        case "7":
+            mostrarProductos();
+            break;
+
+        case "8":
+            mostrarProductos();
+            break;
+
+        case "9":
+            mostrarProductos();
+            break;
+
+        case "10":
+            mostrarProductos();
+            break;
+
+        case "11":
+            mostrarProductos();
+            break;
+
+        case "12":
             mostrarProductos();
             break;
 
