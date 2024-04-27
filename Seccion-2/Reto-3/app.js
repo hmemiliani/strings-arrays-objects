@@ -1,25 +1,37 @@
 let productos = [];
 
-
 function generarId() {
     return productos.length > 0 ? productos[productos.length - 1].id + 1 : 1;
 }
 
 
+//Crear productos -----------------------------------
+
 function agregarProducto(nombre, precio, cantidad, descripcion) {
-    let id = generarId();
-    productos.push({
-        id: id,
-        nombre: nombre,
-        precio: precio,
-        cantidad: cantidad,
-        descripcion: descripcion
-    });
-    alert(`Producto agregado: ${nombre}`);
+    if (nombre && precio && cantidad && descripcion) {
+        let id = generarId();
+        productos.push({
+            id: id,
+            nombre: nombre,
+            precio: precio,
+            cantidad: cantidad,
+            descripcion: descripcion
+        });
+        alert(`Producto agregado: ${nombre}`);
+    } else {
+        alert("Por favor complete todos los campos para agregar un producto.");
+    }
 }
 
 
+//Duplicar poductos -----------------------------------
+
 function duplicarProducto(id) {
+    if (!id || isNaN(id)) {
+        alert("Por favor ingrese un ID valido.");
+        return;
+    }
+
     let productoOriginal = productos.find(producto => producto.id === id);
     if (productoOriginal) {
         let sufijo = ' Copy';
@@ -34,112 +46,167 @@ function duplicarProducto(id) {
         productos.push(duplicado);
         alert(`Producto duplicado: ${nombre}`);
     } else {
-        alert(`No se encontró ningún producto con el ID ${id}`);
+        alert(`No se encontro ningun producto con el ID ${id}`);
     }
 }
 
 
-function mostrarProductos() {
-    console.log("Productos en inventario:");
-    productos.forEach(producto => console.log(producto));
+//mostrar productos -----------------------------------
+
+function mostrarProductos(productosArray = productos) {
+    if (productosArray.length === 0) {
+        console.log("No hay productos en inventario.");
+    } else {
+        console.log("Productos en inventario:");
+        productosArray.forEach(producto => console.log(producto));
+    }
 }
 
-//funcion de busqueda
-function mostrarProductos() {
-    return productos;
-}
+
+//buscar por nombre -----------------------------------
 
 function buscarPorNombre(nombre) {
-    return productos.filter(product => product.name.includes(nombre));
+    return productos.filter(product => product.nombre.includes(nombre));
 }
+
+
+//buscar por precio -----------------------------------
 
 function buscarPorPrecio(min, max) {
-    return productos.filter(product => product.price >= min && product.price <= max);
+    return productos.filter(product => product.precio >= min && product.precio <= max);
 }
 
 
+//actualizas -----------------------------------
 
-//funcion de actualizacion
-function actualizarproductos() {//actualizar
+function actualizarProducto() {
     let id = parseInt(prompt("Ingrese el ID del producto a actualizar:"));
-    let productos = productos.find(productos => productos.id === id);
+    if (!id || isNaN(id)) {
+        alert("Por favor ingrese un ID valido.");
+        return;
+    }
 
-    if (productos) {
+    let producto = productos.find(producto => producto.id === id);
+
+    if (producto) {
         let nombre = prompt("Ingrese el nombre del producto:");
         let precio = parseFloat(prompt("Ingrese el precio del producto:"));
         let cantidad = parseInt(prompt("Ingrese la cantidad del producto:"));
-        let descripcion = prompt("Ingrese la descripción del producto:");
+        let descripcion = prompt("Ingrese la descripcion del producto:");
 
-        productos.nombre = nombre;
-        productos.precio = precio;
-        productos.cantidad = cantidad;
-        productos.descripcion = descripcion;
+        if (nombre && precio && cantidad && descripcion) {
+            producto.nombre = nombre;
+            producto.precio = precio;
+            producto.cantidad = cantidad;
+            producto.descripcion = descripcion;
 
-        alert("Evento actualizado correctamente.");
+            alert("Producto actualizado correctamente.");
+        } else {
+            alert("Por favor complete todos los campos para actualizar el producto.");
+        }
     } else {
-        alert("No se encontro ningun evento con ese ID.");
+        alert("No se encontro ningun producto con ese ID.");
     }
 }
 
-//funcion de eliminar
+
+//eliminar -----------------------------------
+
 function eliminarProducto(id) {
-    productos = productos.filter(product => product.id !== id);
+    if (!id || isNaN(id)) {
+        alert("Por favor ingrese un ID valido.");
+        return;
+    }
+
+    productos = productos.filter(producto => producto.id !== id);
 }
 
-//funcion inventario y verificacion de existencia
-function verificarProducto(id, cantidad) {
-    const productExists = productos.some(product => product.id === id);
-    const enoughQuantity = productos.filter(product => product.id === id && product.quantity >= cantidad).length > 0;
-    return productExists && enoughQuantity;
+
+//veridicar existencia -----------------------------------
+
+function verificarExistenciaProducto(id, cantidad) {
+    if (!id || isNaN(id) || !cantidad || isNaN(cantidad)) {
+        alert("Por favor ingrese un ID y una cantidad validos.");
+        return false;
+    }
+
+    return productos.some(producto => producto.id === id && producto.cantidad >= cantidad);
 }
 
-//venta de productos
-//compra de productos
+
+//vender -----------------------------------
+
 function venderProducto(id, cantidad) {
-    const product = productos.find(product => product.id === id);
-    if (product) {
-        product.quantity -= cantidad;
+    if (!id || isNaN(id) || !cantidad || isNaN(cantidad)) {
+        alert("Por favor ingrese un ID y una cantidad validos.");
+        return;
+    }
+
+    const producto = productos.find(producto => producto.id === id);
+    if (producto) {
+        producto.cantidad -= cantidad;
     }
 }
+
+
+//comprar -----------------------------------
 
 function comprarProducto(id, cantidad) {
-    const product = productos.find(product => product.id === id);
-    if (product) {
-        product.quantity += cantidad;
+    if (!id || isNaN(id) || !cantidad || isNaN(cantidad)) {
+        alert("Por favor ingrese un ID y una cantidad validos.");
+        return;
+    }
+
+    const producto = productos.find(producto => producto.id === id);
+    if (producto) {
+        producto.cantidad += cantidad;
     }
 }
 
-//valor total del inventario
+
+
+//valor total -----------------------------------
+
 function calcularValorTotal() {
-    return productos.reduce((total, product) => total + (product.price * product.quantity), 0);
+    return productos.reduce((total, product) => total + (product.precio * product.cantidad), 0);
 }
 
-//organizacion de productos
+
+//ordenar-precio -----------------------------------
+
 function ordenarPorPrecio(ascendente = true) {
-    return productos.sort((a, b) => ascendente ? a.price - b.price : b.price - a.price);
+    return productos.slice().sort((a, b) => ascendente ? a.precio - b.precio : b.precio - a.precio);
 }
+
+
+//ordenar-cantidad -----------------------------------
 
 function ordenarPorCantidad(ascendente = true) {
-    return productos.sort((a, b) => ascendente ? a.quantity - b.quantity : b.quantity - a.quantity);
+    return productos.slice().sort((a, b) => ascendente ? a.cantidad - b.cantidad : b.cantidad - a.cantidad);
 }
 
-//verificacion malas palabras
-//verificar, esta vaina no me da ni haciendo brujeria
-const badWords = ['palabra-niidea-1', 'palabra-niidea-2', 'palabra-niidea-3', 'palabra-niidea-4', 'palabra-niidea-5'];
+//malas palabras encontradas en internet xd
+const badWords = ['maldito', 'joder', 'cabrón', 'pendejo', 'coño', 'puta', 'gilipollas', 'mierda', 'cagar', 'perra', 'chingar', 'coger', 'zorra', 'desgraciado', 'chingada', 'idiota', 'malparido', 'maricón', 'marica', 'puto', 'pajero', 'culero', 'baboso', 'estúpido', 'tarado', 'imbécil', 'inútil', 'pendeja', 'cabrona', 'cojones', 'cojonudo', 'chingón', 'pendeja', 'pendejo', 'pendejas', 'pendejos', 'putita', 'putito', 'cabronazo', 'cabronaza', 'cojonudo', 'coñazo', 'capullo', 'cagada', 'cagalera', 'cagarla', 'cabrón', 'cabrona', 'cabrones', 'cabronas', 'cojonuda', 'cojonudas', 'cagón', 'cagones', 'cagada', 'cagadas', 'mamón', 'mamona', 'mamones', 'mamonas', 'mamada', 'mamadas', 'mamar', 'cojudo', 'putazo', 'putaza', 'culo', 'culos', 'culito', 'culotes', 'culear', 'culo', 'culero', 'culera', 'culeras', 'culeros', 'culonas', 'culón', 'culitos', 'culón', 'culazos', 'culo de la leche', 'culo del mundo', 'me cago'];
+
+
+
+//buscar malas palabras -----------------------------------
 
 function identificarMalasPalabras() {
     const blacklistedProducts = [];
     productos.forEach(product => {
         const productCopy = Object.assign({}, product);
         badWords.forEach(word => {
-            productCopy.description = productCopy.description.replace(new RegExp(word, 'gi'), '***');
+            productCopy.descripcion = productCopy.descripcion.replace(new RegExp(word, 'gi'), '***');
         });
         blacklistedProducts.push(productCopy);
     });
     return blacklistedProducts;
 }
 
-//reporte general de los productos
+
+//reporte -----------------------------------
+
 function generarReporte() {
     const totalProducts = productos.length;
     const totalInventoryValue = calcularValorTotal();
@@ -162,15 +229,19 @@ function generarReporte() {
 
 
 
+
+
+//inicio -----------------------------------
+
 while (true) {
-    let opcion = prompt("¿Qué desea hacer?\n1. Agregar producto\n2. Duplicar producto\n3. Mostrar productos\n4. Salir");
+    let opcion = prompt("¿Que desea hacer?\n1. Agregar producto\n2. Duplicar producto\n3. Mostrar productos\n4. Actualizar producto\n5. Eliminar producto\n6. Venta de producto\n7. Compra de producto\n8. Verificar existencia de producto\n9. Buscar producto por nombre\n10. Buscar producto por rango de precio\n11. Valor total del inventario\n12. Ordenar productos por precio\n13. Ordenar productos por cantidad\n14. Generar reporte general\n15. Salir");
 
     switch(opcion){
         case "1":
             let nombreProducto = prompt("Ingrese el nombre del producto:");
             let precioProducto = parseFloat(prompt("Ingrese el precio del producto:"));
             let cantidadProducto = parseInt(prompt("Ingrese la cantidad del producto:"));
-            let descripcionProducto = prompt("Ingrese la descripción del producto:");
+            let descripcionProducto = prompt("Ingrese la descripcion del producto:");
 
             agregarProducto(nombreProducto, precioProducto, cantidadProducto, descripcionProducto);
             break;
@@ -184,58 +255,98 @@ while (true) {
             mostrarProductos();
             break;
 
-            
         case "4":
-            mostrarProductos();
+            actualizarProducto();
             break;
 
         case "5":
-            mostrarProductos();
-            break;
-
-        case "5":
-            mostrarProductos();
+            let idEliminar = parseInt(prompt("Ingrese el ID del producto a eliminar:"));
+            eliminarProducto(idEliminar);
             break;
 
         case "6":
-            mostrarProductos();
+            let idVenta = parseInt(prompt("Ingrese el ID del producto a vender:"));
+            let cantidadVenta = parseInt(prompt("Ingrese la cantidad a vender:"));
+            if (verificarExistenciaProducto(idVenta, cantidadVenta)) {
+                venderProducto(idVenta, cantidadVenta);
+                alert(`Venta realizada con exito.`);
+            } else {
+                alert(`No hay suficiente cantidad del producto con ID ${idVenta} en el inventario.`);
+            }
             break;
 
         case "7":
-            mostrarProductos();
+            let idCompra = parseInt(prompt("Ingrese el ID del producto a comprar:"));
+            let cantidadCompra = parseInt(prompt("Ingrese la cantidad a comprar:"));
+            comprarProducto(idCompra, cantidadCompra);
+            alert(`Compra realizada con exito.`);
             break;
 
         case "8":
-            mostrarProductos();
+            let idVerificar = parseInt(prompt("Ingrese el ID del producto a verificar:"));
+            let cantidadVerificar = parseInt(prompt("Ingrese la cantidad a verificar:"));
+            if (verificarExistenciaProducto(idVerificar, cantidadVerificar)) {
+                alert(`¡El producto con ID ${idVerificar} tiene suficiente cantidad en el inventario!`);
+            } else {
+                alert(`No hay suficiente cantidad del producto con ID ${idVerificar} en el inventario.`);
+            }
             break;
 
         case "9":
-            mostrarProductos();
+            let nombreBuscar = prompt("Ingrese el nombre del producto a buscar:");
+            let productosEncontradosNombre = buscarPorNombre(nombreBuscar);
+            if (productosEncontradosNombre.length > 0) {
+                console.log("Productos encontrados:");
+                productosEncontradosNombre.forEach(producto => console.log(producto));
+            } else {
+                console.log("No se encontraron productos con ese nombre.");
+            }
             break;
 
         case "10":
-            mostrarProductos();
+            let precioMin = parseFloat(prompt("Ingrese el precio minimo del rango:"));
+            let precioMax = parseFloat(prompt("Ingrese el precio maximo del rango:"));
+            let productosEncontradosPrecio = buscarPorPrecio(precioMin, precioMax);
+            if (productosEncontradosPrecio.length > 0) {
+                console.log("Productos encontrados:");
+                productosEncontradosPrecio.forEach(producto => console.log(producto));
+            } else {
+                console.log("No se encontraron productos dentro de ese rango de precios.");
+            }
             break;
 
         case "11":
-            mostrarProductos();
+            let valorTotal = calcularValorTotal();
+            alert(`El valor total del inventario es: ${valorTotal}`);
             break;
 
         case "12":
-            mostrarProductos();
+            let ordenPrecio = prompt("¿Desea ordenar de forma ascendente o descendente? (asc/desc)").toLowerCase();
+            let ascendentePrecio = ordenPrecio === 'asc' ? true : false;
+            mostrarProductos(ordenarPorPrecio(ascendentePrecio));
             break;
 
-        case "4":
+        case "13":
+            let ordenCantidad = prompt("¿Desea ordenar de forma ascendente o descendente? (asc/desc)").toLowerCase();
+            let ascendenteCantidad = ordenCantidad === 'asc' ? true : false;
+            mostrarProductos(ordenarPorCantidad(ascendenteCantidad));
+            break;
+
+        case "14":
+            let reporte = generarReporte();
+            console.log(reporte);
+            break;
+
+        case "15":
             alert("Gracias por usar nuestro sistema");
             break;
 
         default:
-            alert("Opción inválida");
+            alert("Opcion invalida");
             break;
 
     }
-    if (opcion === "4") {
+    if (opcion === "15") {
         break;
     }
-
 }
